@@ -21,13 +21,13 @@
           # - `secrets` is a list of strings indicating which secrets to mount for this
           #   app.
           # - `secretsDir` is the path containing `secrets.nix` and the encrypted .age
-          #   files (defaults to `./secrets/`).
+          #   files.
           # - `identity` is the runtime location of the private key (defaults to 
           #   searching the $HOME/.ssh). Mostly useful for testing. Recommended to
           #   leave this option as the default.
           appWithSecrets =
             args@{ secrets
-            , secretsDir ? null
+            , secretsDir
             , identity ? null
             , runtimeInputs ? [ ]
             , text ? ""
@@ -41,7 +41,6 @@
                 "text"
                 "runtimeInputs"
               ];
-              dir = if builtins.isNull secretsDir then ./secrets else secretsDir;
               runtimeInputsArg = runtimeInputs ++ [ agenix ];
               identityArg = if builtins.isNull identity then "" else "-i ${identity}";
               textArg = ''
@@ -53,7 +52,7 @@
                 }
                 mount_secrets () {
                   (
-                    cd ${dir}
+                    cd ${secretsDir}
                     T=$(mktemp -d)
                     ${
                       builtins.concatStringsSep "\n"
