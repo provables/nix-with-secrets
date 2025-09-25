@@ -14,6 +14,7 @@
         let
           pkgs = inputs.nixpkgs.legacyPackages.${system};
           shell = inputs.shell-utils.myShell.${system};
+          agenix = inputs.agenix.packages.${system}.default;
           # Extend `writeShellApplication` to use agenix for decrypting secrets
           # and mounting them in the directory `$SECRETS_DIR`. The directory is 
           # deleted on exit, or on errors.
@@ -40,8 +41,7 @@
                 "text"
                 "runtimeInputs"
               ];
-              runtimeInputsArg = runtimeInputs ++
-                [ inputs.agenix.packages.${system}.default ];
+              runtimeInputsArg = runtimeInputs ++ [ agenix ];
               identityArg = if builtins.isNull identity then "" else "-i ${identity}";
               textArg = ''
                 onerror () {
@@ -88,15 +88,12 @@
           };
           dev = shell {
             name = "nix-with-secrets";
-            packages = [
-              inputs.agenix.packages.${system}.default
-              example
-            ];
+            packages = [ agenix example ];
           };
         in
         {
           lib = {
-            
+            inherit appWithSecrets;
           };
           devShells = {
             default = dev;
