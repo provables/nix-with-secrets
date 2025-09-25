@@ -27,7 +27,7 @@
           #   leave this option as the default.
           appWithSecrets =
             args@{ secrets
-            , secretsDir ? ./secrets
+            , secretsDir ? null
             , identity ? null
             , runtimeInputs ? [ ]
             , text ? ""
@@ -41,6 +41,7 @@
                 "text"
                 "runtimeInputs"
               ];
+              dir = if builtins.isNull secretsDir then ./secrets else secretsDir;
               runtimeInputsArg = runtimeInputs ++ [ agenix ];
               identityArg = if builtins.isNull identity then "" else "-i ${identity}";
               textArg = ''
@@ -52,7 +53,7 @@
                 }
                 mount_secrets () {
                   (
-                    cd ${secretsDir}
+                    cd ${dir}
                     T=$(mktemp -d)
                     ${
                       builtins.concatStringsSep "\n"
