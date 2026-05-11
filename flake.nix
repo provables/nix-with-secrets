@@ -28,6 +28,9 @@
           lib = {
             inherit appWithSecrets;
           };
+          packages = {
+            inherit agenix;
+          };
           devShells = {
             default = dev;
           };
