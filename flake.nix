@@ -22,6 +22,9 @@
           };
         in
         {
+          packages = {
+            inherit agenix;
+          };
           lib = {
             inherit appWithSecrets;
           };
