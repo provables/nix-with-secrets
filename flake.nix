@@ -17,8 +17,9 @@
           appWithSecrets = pkgs.callPackage ./nix/appWithSecrets.nix { inherit agenix; };
           example = import ./secrets-example/example.nix { inherit appWithSecrets; };
           dev = inputs'.shell-utils.lib.shell {
+            EDITOR = "${pkgs.vim}/bin/vim";
             name = "nix-with-secrets";
-            packages = [ agenix example ];
+            packages = [ agenix example pkgs.vim ];
           };
         in
         {
